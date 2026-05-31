@@ -1,103 +1,53 @@
-# Vitrace — Deploy Guide
+# Vitrace
 
-## Struktur Folder
+Vitrace is a static Netlify app with one serverless API endpoint for AI-assisted psychographic reflection and Bazi-style reflective reading.
 
-```
-vitrace/
-├── index.html                    ← app utama
-├── netlify.toml                  ← konfigurasi Netlify
-├── package.json                  ← dependencies
-├── netlify/
-│   └── functions/
-│       └── analyze.js            ← proxy ke Anthropic API
-└── README.md
-```
-
----
-
-## Cara Deploy ke Netlify
-
-### Opsi A — Via GitHub (Rekomendasi)
-
-1. **Buat repo GitHub baru** (private atau public)
-
-2. **Push semua file ini ke repo:**
-   ```bash
-   git init
-   git add .
-   git commit -m "init vitrace"
-   git remote add origin https://github.com/USERNAME/vitrace.git
-   git push -u origin main
-   ```
-
-3. **Connect ke Netlify:**
-   - Buka [netlify.com](https://netlify.com) → Add new site → Import from Git
-   - Pilih repo yang baru dibuat
-   - Build command: *(kosongkan)*
-   - Publish directory: `.`
-   - Klik **Deploy site**
-
-4. **Set API Key:**
-   - Di Netlify dashboard → Site configuration → Environment variables
-   - Klik **Add variable**
-   - Key: `ANTHROPIC_API_KEY`
-   - Value: *(isi dengan API key dari [console.anthropic.com](https://console.anthropic.com))*
-   - Klik **Save** → lalu **Trigger deploy** agar env var aktif
-
----
-
-### Opsi B — Netlify CLI (Langsung dari Terminal)
-
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Install dependencies
-npm install
-
-# Login ke Netlify
-netlify login
-
-# Deploy ke production
-netlify deploy --prod
-```
-
-Lalu set env var:
-```bash
-netlify env:set ANTHROPIC_API_KEY sk-ant-xxxxxxxxxxxxx
-netlify deploy --prod
-```
-
----
-
-## Cara Dapat API Key Anthropic
-
-1. Buka [console.anthropic.com](https://console.anthropic.com)
-2. Login atau buat akun
-3. Masuk ke **API Keys** → **Create Key**
-4. Copy key-nya (hanya tampil sekali)
-5. Paste ke Netlify environment variable
-
----
-
-## Testing Lokal
+## Local check
 
 ```bash
 npm install
-netlify dev
+npm run check
 ```
 
-Buka `http://localhost:8888` — Netlify CLI otomatis menjalankan function lokal juga.
+## Run locally with Netlify
 
-Untuk testing dengan API key lokal, buat file `.env`:
+```bash
+npm install
+cp .env.example .env
+# Fill ANTHROPIC_API_KEY in .env
+npm run dev
 ```
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+
+## Production deploy
+
+Required environment variable:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx
 ```
 
----
+Recommended:
 
-## Catatan
+```bash
+ALLOWED_ORIGINS=https://your-domain.com
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ALLOWED_ANTHROPIC_MODELS=claude-sonnet-4-20250514,claude-3-7-sonnet-20250219,claude-3-5-sonnet-20241022,claude-3-5-haiku-20241022
+```
 
-- Aplikasi tetap berjalan tanpa backend (mode fallback lokal untuk bazi)
-- API key **tidak pernah** terekspos ke client/browser — hanya ada di server function
-- Setiap request ke `/api/analyze` diproses di server Netlify, bukan di browser user
+The public route is:
+
+```text
+/api/analyze
+```
+
+Netlify redirects it to:
+
+```text
+/.netlify/functions/analyze
+```
+
+## Security notes
+
+This bundle includes fail-closed CORS handling, origin rejection, request validation, payload limits, best-effort rate limiting, model allowlisting, output schema validation, sanitized upstream errors, structured logs, no silent frontend fallback, externalized frontend JavaScript, and Netlify security headers.
+
+For a fully public high-traffic site, add distributed rate limiting or WAF protection.

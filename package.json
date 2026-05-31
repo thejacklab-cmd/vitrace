@@ -1,11 +1,20 @@
 {
   "name": "vitrace",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Vitrace — Refleksi Psikografis & Bazi",
   "private": true,
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.0"
+  "scripts": {
+    "dev": "netlify dev",
+    "check": "npm run check:backend && npm run check:frontend",
+    "test": "node --test",
+    "predeploy": "npm run check",
+    "check:backend": "node --check netlify/functions/analyze.js",
+    "check:frontend": "node --check assets/app.js"
   },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.30.0"
+  },
+  "devDependencies": {},
   "engines": {
     "node": ">=18"
   }
