@@ -1,0 +1,12 @@
+{
+  "name": "vitrace",
+  "version": "1.0.0",
+  "description": "Vitrace — Refleksi Psikografis & Bazi",
+  "private": true,
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

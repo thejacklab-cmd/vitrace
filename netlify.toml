@@ -1,0 +1,20 @@
+# ─── Vitrace — Netlify Configuration ──────────────────────
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Route /api/analyze → Netlify Function
+[[redirects]]
+  from = "/api/analyze"
+  to = "/.netlify/functions/analyze"
+  status = 200
+
+# Serve index.html for all other routes (SPA fallback)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
