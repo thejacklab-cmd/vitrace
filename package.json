@@ -12,7 +12,7 @@
     "check:frontend": "node --check assets/app.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.30.0"
+    "openai": "4.67.1"
   },
   "devDependencies": {},
   "engines": {
