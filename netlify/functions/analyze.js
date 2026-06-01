@@ -2,37 +2,23 @@
 
 // Vitrace — Production-hardened Netlify Function
 // Route: POST /api/analyze
-// Required env: ANTHROPIC_API_KEY
-// Recommended env: ALLOWED_ORIGINS=https://your-domain.com, ANTHROPIC_MODEL=claude-sonnet-4-20250514
+// Required env: DEEPSEEK_API_KEY
+// Recommended env: ALLOWED_ORIGINS=https://your-domain.com, DEEPSEEK_MODEL=deepseek-reasoner
 
-const Anthropic = require('@anthropic-ai/sdk');
+const OpenAI = require('openai');
 const crypto = require('crypto');
 
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES || 12000);
 const MAX_TEXT_FIELD = Number(process.env.MAX_TEXT_FIELD || 1200);
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 12);
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
-const MAX_TOKENS = Number(process.env.ANTHROPIC_MAX_TOKENS || 2000);
+const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-reasoner';
+const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS || 2000);
 
-const DEFAULT_ALLOWED_MODELS = new Set([
-  'claude-sonnet-4-20250514',
-  'claude-3-7-sonnet-20250219',
-  'claude-3-5-sonnet-20241022',
-  'claude-3-5-haiku-20241022'
+const ALLOWED_MODELS = new Set([
+  'deepseek-reasoner',
+  'deepseek-chat'
 ]);
-
-function getAllowedModels() {
-  const configured = (process.env.ALLOWED_ANTHROPIC_MODELS || '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-  return configured.length ? new Set(configured) : DEFAULT_ALLOWED_MODELS;
-}
-
-function isConfiguredModelAllowed() {
-  return getAllowedModels().has(MODEL);
-}
 
 // Best-effort in-memory rate limit for warm Netlify instances.
 // For high-traffic production, put Cloudflare/Netlify Edge/Upstash in front of this.
@@ -61,10 +47,6 @@ function isOriginAllowed(event) {
   const configured = getConfiguredOrigins();
   const origin = getRequestOrigin(event);
   if (configured.length === 0) return true;
-  // Browsers send an Origin header on cross-origin POSTs. Requests without Origin are
-  // treated as same-origin/server-to-server for CLI health checks and trusted backends.
-  // Public deployments should pair this with WAF/rate limiting if non-browser clients
-  // are not intended to call this function directly.
   if (!origin) return true;
   return configured.includes(origin);
 }
@@ -113,7 +95,7 @@ function rateLimit(ip) {
 
 function sanitizeText(value, max = MAX_TEXT_FIELD) {
   if (value === null || value === undefined) return '';
-  return String(value).replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+  return String(value).replace(/[ -]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
 function sanitizeArray(value, maxItems = 20, maxItemLen = 160) {
@@ -332,7 +314,7 @@ exports.handler = async (event) => {
     return json(403, { error: 'Forbidden origin', requestId }, baseHeaders);
   }
 
-  if (!isConfiguredModelAllowed()) {
+  if (!ALLOWED_MODELS.has(MODEL)) {
     console.error(JSON.stringify({ requestId, level: 'error', msg: 'disallowed model configured', model: MODEL }));
     return json(500, { error: 'Server model is not configured correctly', requestId }, baseHeaders);
   }
@@ -348,8 +330,8 @@ exports.handler = async (event) => {
     return json(429, { error: 'Too many requests', retryAfter: limit.retryAfter, requestId }, { ...baseHeaders, 'Retry-After': String(limit.retryAfter) });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error(JSON.stringify({ requestId, level: 'error', msg: 'missing ANTHROPIC_API_KEY' }));
+  if (!process.env.DEEPSEEK_API_KEY) {
+    console.error(JSON.stringify({ requestId, level: 'error', msg: 'missing DEEPSEEK_API_KEY' }));
     return json(500, { error: 'Server is not configured', requestId }, baseHeaders);
   }
 
@@ -376,15 +358,24 @@ exports.handler = async (event) => {
 
   try {
     const started = Date.now();
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const msg = await client.messages.create({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      temperature: 0.3,
-      messages: [{ role: 'user', content: prompt }]
+    const client = new OpenAI({
+      apiKey: process.env.DEEPSEEK_API_KEY,
+      baseURL: 'https://api.deepseek.com'
     });
 
-    const raw = msg.content?.find((part) => part.type === 'text')?.text || msg.content?.[0]?.text || '';
+    // deepseek-reasoner does not support temperature parameter
+    const createParams = {
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      messages: [{ role: 'user', content: prompt }]
+    };
+
+    if (MODEL === 'deepseek-chat') {
+      createParams.temperature = 0.3;
+    }
+
+    const response = await client.chat.completions.create(createParams);
+    const raw = response.choices?.[0]?.message?.content || '';
     const parsed = parseModelJson(raw);
     const valid = responseKey === 'profile' ? validateProfile(parsed) : validateBazi(parsed);
 
