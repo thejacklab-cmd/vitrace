@@ -477,7 +477,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (event) => {
     const el = event.target.closest('[data-action]');
     if (!el) return;
-    event.preventDefault();
+    // Don't preventDefault on checkboxes — it blocks the native checked toggle
+    // and prevents the change event from firing.
+    if (el.type !== 'checkbox') event.preventDefault();
     handleDelegatedAction(el.dataset.action, el, event);
   });
 
