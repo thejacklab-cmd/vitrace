@@ -98,7 +98,7 @@ function goStep(n) {
 
   // Validate Step 4 → 5: Bazi DOB must be filled OR explicitly skipped
   if (n === 5 && !baziSkipped) {
-    const dobVal = document.getElementById('bazi_dob').value;
+    const dobVal = document.getElementById('bazi_dob').value || document.getElementById('f_dob').value;
     if (!dobVal) {
       showFieldError('Untuk analisis Bazi, isi Tanggal Lahir terlebih dahulu. Atau klik "Lewati Bazi →" jika ingin melanjutkan tanpa analisis Bazi.');
       document.getElementById('bazi_dob').focus();
@@ -214,7 +214,7 @@ function toggleConsent(checked) {
 // ─── REVIEW SUMMARY WITH COMPLETION BANNER ───────────────
 function populateReview() {
   const name = safeText(document.getElementById('f_name').value.trim());
-  const age  = safeText(document.getElementById('f_age').value);
+  const age  = safeText(String(calcAgeFromDob(document.getElementById('f_dob').value) ?? ''));
   const gen  = safeText(document.getElementById('f_gender').value);
   const bg   = safeText(document.getElementById('f_bg').value);
   const goal = safeText(document.getElementById('f_goal').value.trim());
@@ -478,7 +478,30 @@ function handleDelegatedAction(action, el, event) {
 }
 
 // Attach listeners after DOM ready. No inline script handlers are required.
+function calcAgeFromDob(dobStr) {
+  if (!dobStr) return null;
+  const dob = new Date(dobStr);
+  if (isNaN(dob)) return null;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  return age;
+}
+
+function syncFDob(dobStr) {
+  const baziDob = document.getElementById('bazi_dob');
+  if (baziDob && !baziDob.value) baziDob.value = dobStr;
+  const ageDisplay = document.getElementById('f_age_display');
+  const age = calcAgeFromDob(dobStr);
+  if (ageDisplay) ageDisplay.textContent = age !== null ? `Usia: ${age} tahun` : '';
+  updateBaziPreview();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  const fDobEl = document.getElementById('f_dob');
+  if (fDobEl) fDobEl.addEventListener('change', () => syncFDob(fDobEl.value));
+
   const dobEl = document.getElementById('bazi_dob');
   const hourEl = document.getElementById('bazi_hour');
   if (dobEl) dobEl.addEventListener('change', updateBaziPreview);
@@ -625,7 +648,10 @@ function getDayMasterStrength(chart, elemCounts) {
 }
 
 function collectBaziData() {
-  const dobStr = document.getElementById('bazi_dob').value;
+  const fDobVal = document.getElementById('f_dob').value;
+  const baziDobEl = document.getElementById('bazi_dob');
+  if (fDobVal && !baziDobEl.value) baziDobEl.value = fDobVal;
+  const dobStr = baziDobEl.value;
   if (!dobStr) return null;
 
   const hourVal = document.getElementById('bazi_hour').value;
@@ -713,7 +739,7 @@ async function generateProfile() {
   }
 
   const name   = document.getElementById('f_name').value.trim();
-  const age    = document.getElementById('f_age').value;
+  const age    = String(calcAgeFromDob(document.getElementById('f_dob').value) ?? '');
   const gen    = document.getElementById('f_gender').value;
   const bg     = document.getElementById('f_bg').value;
   const goal   = document.getElementById('f_goal').value.trim();
