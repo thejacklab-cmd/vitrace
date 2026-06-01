@@ -96,6 +96,16 @@ function goStep(n) {
     }
   }
 
+  // Validate Step 4 → 5: Bazi DOB must be filled OR explicitly skipped
+  if (n === 5 && !baziSkipped) {
+    const dobVal = document.getElementById('bazi_dob').value;
+    if (!dobVal) {
+      showFieldError('Untuk analisis Bazi, isi Tanggal Lahir terlebih dahulu. Atau klik "Lewati Bazi →" jika ingin melanjutkan tanpa analisis Bazi.');
+      document.getElementById('bazi_dob').focus();
+      return;
+    }
+  }
+
   document.getElementById('step' + currentStep).classList.remove('active');
   document.getElementById('step' + n).classList.add('active');
 
