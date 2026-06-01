@@ -851,6 +851,62 @@ body.mode-consultant .btn-next:hover:not(:disabled){
 .u-13f83a16{text-align:left;padding:16px 20px;}
 .u-a4894d9a{display:block;margin-bottom:6px;}
 
+/* ── NEW PREMIUM COMPONENTS ──────────────────────────────── */
+
+/* Pengantar block */
+.result-pengantar{background:var(--card-bg);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:18px;font-size:14px;line-height:1.75;color:var(--text1);font-style:italic;}
+
+/* Section labels */
+.result-section-label{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin:24px 0 6px;}
+.result-section-desc{font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6;}
+
+/* Metric desc */
+.metric-desc{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4;}
+
+/* Narrative badges */
+.narrative-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-bottom:6px;}
+.narrative-badge--strength{background:rgba(80,180,100,0.15);color:#4aaa66;}
+.narrative-badge--grow{background:rgba(230,160,30,0.15);color:#c08020;}
+.narrative-badge--insight{background:rgba(80,140,220,0.12);color:#5080cc;}
+.narrative-badge--close{background:rgba(150,100,220,0.12);color:#8855cc;}
+
+/* Narrative intro */
+.narrative-intro{font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5;font-style:italic;}
+
+/* Rich narrative list */
+.narrative-list--rich{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.narrative-list--rich li{padding:8px 12px;background:var(--card-bg);border-radius:8px;border-left:2px solid var(--accent);font-size:12.5px;line-height:1.6;color:var(--text1);}
+
+/* Closing narrative body */
+.narrative-body--closing{font-size:13.5px;line-height:1.8;color:var(--text1);font-style:italic;}
+
+/* Bazi glossary */
+.bazi-glossary{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px 18px;margin-bottom:16px;}
+.bazi-glossary-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.bazi-glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.bazi-glossary-item{font-size:11px;line-height:1.55;color:var(--text2);}
+.bazi-glossary-item strong{color:var(--text1);}
+
+/* Bazi chart subtitle */
+.bazi-chart-subtitle,.bazi-elem-subtitle,.bazi-lucky-subtitle,.bazi-action-desc{font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5;font-style:italic;}
+
+/* Bazi reading label */
+.bazi-reading-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.bazi-reading-label--warn{color:#e06060;}
+
+/* Bazi reading note */
+.bazi-reading-note{font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.55;font-style:italic;padding:8px 12px;background:rgba(128,128,128,0.06);border-radius:6px;}
+
+/* Bazi element sections */
+.bazi-elem-section{margin-bottom:10px;}
+.bazi-elem-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+.bazi-elem-section--fav .bazi-elem-section-label{color:#4aaa66;}
+.bazi-elem-section--unfav .bazi-elem-section-label{color:#e06060;}
+.bazi-elem-advice{margin-top:10px;padding:8px 12px;background:rgba(128,128,128,0.07);border-radius:6px;font-size:12px;color:var(--text2);line-height:1.6;}
+
+/* Bazi industries inline */
+.bazi-industries{display:flex;flex-wrap:wrap;gap:6px;}
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media(max-width:600px){
   .app-wrap{padding:20px 14px 60px;}

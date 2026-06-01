@@ -921,19 +921,32 @@ function renderBaziSection(bazi, reading) {
   return `
   <div class="bazi-result-wrap" id="baziResultSection">
     <div class="u-54ecaa5a">
-      <div class="u-f18b664a">☯ Analisis Bazi</div>
-      <div class="u-a41d018e">Pembacaan berdasarkan metafisika Tiongkok. Bersifat reflektif, bukan prediktif.</div>
+      <div class="u-f18b664a">☯ Analisis Bazi (八字)</div>
+      <div class="u-a41d018e">Pembacaan berdasarkan sistem metafisika Tiongkok. Bersifat reflektif dan interpretatif — bukan ramalan pasti.</div>
+    </div>
+
+    <!-- Glossary -->
+    <div class="bazi-glossary">
+      <div class="bazi-glossary-title">📖 Panduan Membaca Analisis Ini</div>
+      <div class="bazi-glossary-grid">
+        <div class="bazi-glossary-item"><strong>四柱 (Empat Pilar)</strong> — Chart Bazi terdiri dari 4 pilar: Tahun, Bulan, Hari, dan Jam kelahiran. Setiap pilar mencerminkan aspek berbeda dari kepribadian dan perjalanan hidup.</div>
+        <div class="bazi-glossary-item"><strong>Day Master (Tuan Hari)</strong> — Elemen di pilar Hari yang mewakili inti kepribadianmu — "siapa kamu sebenarnya" dalam sistem Bazi.</div>
+        <div class="bazi-glossary-item"><strong>Luck Pillar (Da Yun)</strong> — Siklus energi 10 tahunan yang memengaruhi tema kehidupanmu. Setiap orang memasuki Luck Pillar berbeda sesuai usia.</div>
+        <div class="bazi-glossary-item"><strong>Elemen Favorable/Unfavorable</strong> — Elemen yang mendukung atau menciptakan ketegangan dalam chartmu. Ini bukan "baik" atau "buruk" secara absolut — melainkan tentang keseimbangan.</div>
+      </div>
     </div>
 
     <!-- Chart display -->
     <div class="bazi-chart-display">
-      <div class="u-99dda453">四柱 Empat Pilar</div>
+      <div class="u-99dda453">四柱 — Empat Pilar Kelahiran</div>
+      <div class="bazi-chart-subtitle">Setiap kolom mewakili energi dari Tahun, Bulan, Hari, dan Jam kelahiranmu.</div>
       <div class="bazi-chart-header">${chartCols}</div>
       <div class="u-e01c9187">
-        <div class="u-ef958c34">Distribusi Elemen</div>
+        <div class="u-ef958c34">Distribusi Lima Elemen</div>
+        <div class="bazi-elem-subtitle">Menunjukkan keseimbangan elemen dalam chartmu. Dominasi satu elemen dapat mencerminkan kecenderungan tertentu dalam kepribadian.</div>
         ${elemBars}
       </div>
-      <div class="u-e7f0d79f">Day Master: <strong class="u-6ddb9c03">${safeText(chart.day.stem)} (${safeText(chart.day.stemElem)})</strong> · Kekuatan: <strong>${safeText(dmStrength)}</strong></div>
+      <div class="u-e7f0d79f">Day Master (Inti Kepribadian): <strong class="u-6ddb9c03">${safeText(chart.day.stem)} — ${safeText(chart.day.stemElem)}</strong> · Kekuatan Day Master: <strong>${safeText(dmStrength)}</strong></div>
     </div>
 
     <!-- Tabs -->
@@ -947,39 +960,54 @@ function renderBaziSection(bazi, reading) {
 
     <div class="bazi-tab-panel active" id="bz-chart">
       <div class="bazi-reading-card">
+        <div class="bazi-reading-label">Gambaran Umum</div>
         <div class="bazi-reading-title">Struktur Chart & Kepribadian</div>
         <div class="bazi-reading-body">${safeText(reading.chartSummary || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Day Master — Siapa Kamu Sebenarnya</div>
+        <div class="bazi-reading-label">Day Master</div>
+        <div class="bazi-reading-title">Inti Kepribadianmu</div>
+        <div class="bazi-reading-note">Day Master adalah elemen yang mewakili "siapa kamu" — fondasi karakter, cara berpikir, dan kecenderungan alami yang paling mendasar.</div>
         <div class="bazi-reading-body">${safeText(reading.dayMasterProfile || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Elemen Favorable & Unfavorable</div>
+        <div class="bazi-reading-label">Keseimbangan Elemen</div>
+        <div class="bazi-reading-title">Elemen yang Mendukung & Perlu Diperhatikan</div>
+        <div class="bazi-reading-note">Dalam sistem Bazi, setiap orang memiliki elemen yang "cocok" dengan chartnya (favorable) dan yang menciptakan ketegangan jika terlalu dominan (unfavorable). Ini bukan tentang menghindari sesuatu, melainkan menjaga keseimbangan.</div>
         <div class="bazi-reading-body">
-          <strong class="u-701ab37f">Mendukung kamu:</strong>
-          <ul>${favElem}</ul>
-          <strong class="u-405845c5">Perlu diwaspadai:</strong>
-          <ul>${unfavElem}</ul>
-          ${reading.elementBalance?.advice ? '<div class="u-1a91c142">' + safeText(reading.elementBalance.advice) + '</div>' : ''}
+          <div class="bazi-elem-section bazi-elem-section--fav">
+            <div class="bazi-elem-section-label">✦ Elemen yang Mendukungmu</div>
+            <ul>${favElem}</ul>
+          </div>
+          <div class="bazi-elem-section bazi-elem-section--unfav">
+            <div class="bazi-elem-section-label">⚠ Elemen yang Perlu Diwaspadai</div>
+            <ul>${unfavElem}</ul>
+          </div>
+          ${reading.elementBalance?.advice ? '<div class="bazi-elem-advice">' + safeText(reading.elementBalance.advice) + '</div>' : ''}
         </div>
       </div>
     </div>
 
     <div class="bazi-tab-panel" id="bz-career">
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Industri Terbaik</div>
-        <div class="bazi-reading-body">${industries}</div>
+        <div class="bazi-reading-label">Karir</div>
+        <div class="bazi-reading-title">Bidang yang Cenderung Cocok</div>
+        <div class="bazi-reading-note">Berdasarkan elemen dominan dan Day Master, bidang-bidang berikut cenderung selaras dengan energi alami chartmu.</div>
+        <div class="bazi-reading-body bazi-industries">${industries}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Gaya Kerja — Entrepreneur vs Employee</div>
+        <div class="bazi-reading-label">Gaya Kerja</div>
+        <div class="bazi-reading-title">Pola Kerja yang Paling Natural</div>
         <div class="bazi-reading-body">${safeText(reading.careerWealth?.workStyle || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Pola Rezeki</div>
+        <div class="bazi-reading-label">Rezeki</div>
+        <div class="bazi-reading-title">Pola Rezeki dalam Chart</div>
+        <div class="bazi-reading-note">Ini adalah kecenderungan — bukan jaminan. Rezeki dalam Bazi mencerminkan kondisi energetik yang mendukung atau menantang aliran kemakmuran.</div>
         <div class="bazi-reading-body">${safeText(reading.careerWealth?.wealthPattern || '')}</div>
       </div>
       <div class="bazi-reading-card u-6002c38a">
+        <div class="bazi-reading-label bazi-reading-label--warn">Perhatian</div>
         <div class="bazi-reading-title u-2aeac88c">Financial Blind Spot</div>
         <div class="bazi-reading-body">${safeText(reading.careerWealth?.blindspot || '')}</div>
       </div>
@@ -987,44 +1015,55 @@ function renderBaziSection(bazi, reading) {
 
     <div class="bazi-tab-panel" id="bz-relasi">
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Spouse Star</div>
+        <div class="bazi-reading-label">Relasi Romantis</div>
+        <div class="bazi-reading-title">Spouse Star — Pola Bintang Pasangan</div>
+        <div class="bazi-reading-note">Spouse Star adalah elemen atau bintang dalam chart yang mengindikasikan kecenderungan dalam relasi romantis — bukan menentukan siapa pasanganmu, melainkan pola interaksi dan kebutuhan emosionalmu.</div>
         <div class="bazi-reading-body">${safeText(reading.relationships?.spouseStar || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Pola Cinta & Kebutuhan Emosional</div>
+        <div class="bazi-reading-label">Pola Cinta</div>
+        <div class="bazi-reading-title">Cara Kamu Mencintai & Kebutuhan Emosional</div>
         <div class="bazi-reading-body">${safeText(reading.relationships?.lovePattern || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Timing Pernikahan</div>
+        <div class="bazi-reading-label">Timing</div>
+        <div class="bazi-reading-title">Kesiapan Relasi Serius</div>
+        <div class="bazi-reading-note">Dalam Bazi, timing relasi lebih tentang kondisi internal dan energi yang sedang aktif — bukan tanggal atau usia spesifik.</div>
         <div class="bazi-reading-body">${safeText(reading.relationships?.marriageTiming || '')}</div>
       </div>
     </div>
 
     <div class="bazi-tab-panel" id="bz-luck">
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Luck Pillar Sekarang</div>
+        <div class="bazi-reading-label">Siklus Saat Ini</div>
+        <div class="bazi-reading-title">Luck Pillar yang Sedang Aktif</div>
+        <div class="bazi-reading-note">Luck Pillar (大運 / Da Yun) adalah siklus energi 10 tahunan yang memengaruhi tema kehidupanmu. Setiap orang memasuki siklus berbeda tergantung usia dan chart lahir.</div>
         <div class="bazi-reading-body">${safeText(reading.luckPillarNow || '')}</div>
       </div>
       <div class="bazi-reading-card">
-        <div class="bazi-reading-title">Peluang & Risiko 5-10 Tahun ke Depan</div>
+        <div class="bazi-reading-label">Proyeksi</div>
+        <div class="bazi-reading-title">Tema 5–10 Tahun ke Depan</div>
+        <div class="bazi-reading-note">Ini adalah gambaran tema energetik berdasarkan transisi Luck Pillar — bukan prediksi pasti, melainkan peta arah yang bisa diantisipasi.</div>
         <div class="bazi-reading-body">${safeText(reading.upcomingYears || '')}</div>
       </div>
-      ${luckPillars.length > 0 ? `<div class="u-b1ecc496"><div class="u-070cf1a7">Peta Luck Pillar</div><div class="bazi-lucky-grid">${lpCards}</div></div>` : ''}
+      ${luckPillars.length > 0 ? `<div class="u-b1ecc496"><div class="u-070cf1a7">Peta Perjalanan Luck Pillar</div><div class="bazi-lucky-subtitle">Setiap kartu menunjukkan satu siklus 10 tahun. Kartu berlabel "Sekarang" adalah siklus yang sedang aktif.</div><div class="bazi-lucky-grid">${lpCards}</div></div>` : ''}
     </div>
 
     <div class="bazi-tab-panel" id="bz-action">
       <div class="bazi-reading-card u-6002c38a">
-        <div class="bazi-reading-title u-2aeac88c">Peringatan Jujur</div>
+        <div class="bazi-reading-label bazi-reading-label--warn">Jujur & Terbuka</div>
+        <div class="bazi-reading-title u-2aeac88c">Tantangan yang Perlu Diperhatikan</div>
         <div class="bazi-reading-body">${safeText(reading.honestWarning || '')}</div>
       </div>
       <div class="u-9374e842">
-        <div class="u-d67d14d1">Panduan Praktis</div>
+        <div class="u-d67d14d1">Panduan Praktis dari Chart Ini</div>
+        <div class="bazi-action-desc">Langkah-langkah berikut disusun berdasarkan pola dan kecenderungan yang muncul dari chartmu — bukan aturan absolut, melainkan arah yang mungkin paling relevan untuk kamu.</div>
         <div class="growth-grid">${actions}</div>
       </div>
     </div>
 
     <div class="bazi-disclaimer">
-      Analisis Bazi ini bersifat reflektif dan interpretatif berdasarkan sistem metafisika tradisional Tiongkok. Ini bukan ramalan, prediksi pasti, atau pengganti keputusan rasional. Gunakan sebagai perspektif tambahan, bukan panduan mutlak. Hidup tetap ditentukan oleh pilihan dan usaha kamu.
+      <strong>Catatan Penting:</strong> Analisis Bazi ini bersifat reflektif dan interpretatif berdasarkan sistem metafisika tradisional Tiongkok (八字). Ini bukan ramalan, prediksi pasti, atau pengganti keputusan rasional dan profesional. Gunakan sebagai perspektif tambahan untuk refleksi diri, bukan panduan mutlak. Hidup tetap ditentukan oleh pilihan, usaha, dan keputusanmu sendiri.
     </div>
   </div>`;
 }
@@ -1080,6 +1119,29 @@ function renderResult(name, scores, profile, intN) {
       <div class="hypothesis-body">${safeText(profile.hipotesisReflektif)}</div>
     </div>` : '';
 
+  const pengantarBlock = profile.pengantar
+    ? `<div class="result-pengantar">${safeText(profile.pengantar)}</div>`
+    : '';
+
+  const dimDescriptions = {
+    'Kognitif':  'Cara kamu memproses informasi dan berpikir strategis.',
+    'Emosional': 'Kemampuan mengelola emosi dan berempati terhadap orang lain.',
+    'Sosial':    'Bagaimana kamu mendapatkan energi dari interaksi sosial.',
+    'Keputusan': 'Cara kamu mengambil keputusan dan berorientasi terhadap waktu.',
+    'Stres':     'Kemampuan menghadapi tekanan dan kecepatan pemulihan.',
+    'Perilaku':  'Konsistensi pola kerja dan kemampuan beradaptasi.'
+  };
+
+  const metricCardsEnhanced = Object.entries(dimAvgs).map(([k,v],i) => `
+    <div class="metric-card u-09834322">
+      <div class="metric-label">${safeText(k)}</div>
+      <div class="metric-val">${v}<span>%</span></div>
+      <div class="metric-bar-bg"><div class="metric-bar-fill ${barColors[i]}" data-width="${v}"></div></div>
+      <div class="metric-note">${safeText(levelLabel(v))}</div>
+      <div class="metric-context">${safeText(getDimContext(k, v))}</div>
+      <div class="metric-desc">${safeText(dimDescriptions[k] || '')}</div>
+    </div>`).join('');
+
   const resultInner = document.getElementById('resultInner');
   resultInner.innerHTML = `
     <div class="result-header-card">
@@ -1093,11 +1155,14 @@ function renderResult(name, scores, profile, intN) {
       </div>
     </div>
 
+    ${pengantarBlock}
+
+    <div class="result-section-label">Gambaran Dimensi Perilaku</div>
     <div class="u-f9be9d50">
-      Skor merupakan <strong>indikasi berbasis self-report dan observasi</strong>, bukan pengukuran psikometrik tervalidasi. Gunakan sebagai titik awal refleksi, bukan kesimpulan final.
+      Skor di bawah ini merupakan <strong>indikasi berbasis self-report</strong>, bukan pengukuran psikometrik tervalidasi. Tidak ada skor yang "benar" atau "salah" — ini cerminan dari jawaban dan pola yang kamu kenali dalam dirimu sendiri.
     </div>
 
-    <div class="metrics-grid">${metricCards}</div>
+    <div class="metrics-grid">${metricCardsEnhanced}</div>
 
     <div class="chart-row">
       <div class="chart-card"><div class="chart-label">Radar Dimensi</div><canvas id="rchart" width="240" height="240"></canvas></div>
@@ -1106,38 +1171,54 @@ function renderResult(name, scores, profile, intN) {
 
     ${hypoBlock}
 
+    <div class="result-section-label">Insight Perilaku Mendalam</div>
+
     <div class="narrative-grid">
       <div class="narrative-card">
-        <div class="narrative-title">Kecenderungan Positif</div>
-        <ul class="narrative-list">${strengths}</ul>
+        <div class="narrative-badge narrative-badge--strength">Kekuatan</div>
+        <div class="narrative-title">Kecenderungan Positif yang Menonjol</div>
+        <div class="narrative-intro">Pola-pola berikut tampak sebagai kekuatan alami berdasarkan jawaban dan observasi sesi ini.</div>
+        <ul class="narrative-list narrative-list--rich">${strengths}</ul>
       </div>
       <div class="narrative-card">
-        <div class="narrative-title">Area Pengembangan</div>
-        <ul class="narrative-list">${areas}</ul>
+        <div class="narrative-badge narrative-badge--grow">Tumbuh</div>
+        <div class="narrative-title">Area yang Bisa Dikembangkan</div>
+        <div class="narrative-intro">Area berikut bukan kelemahan, melainkan peluang pertumbuhan yang paling relevan untuk saat ini.</div>
+        <ul class="narrative-list narrative-list--rich">${areas}</ul>
       </div>
       <div class="narrative-card">
-        <div class="narrative-title">Kecenderungan Komunikasi</div>
+        <div class="narrative-badge narrative-badge--insight">Insight</div>
+        <div class="narrative-title">Gaya Komunikasi</div>
+        <div class="narrative-intro">Bagaimana kamu cenderung menyampaikan dan menerima informasi.</div>
         <div class="narrative-body">${safeText(profile.gayaKomunikasi || '')}</div>
       </div>
       <div class="narrative-card">
+        <div class="narrative-badge narrative-badge--insight">Insight</div>
         <div class="narrative-title">Pola dalam Relasi</div>
+        <div class="narrative-intro">Energi sosial dan cara kamu membangun hubungan yang bermakna.</div>
         <div class="narrative-body">${safeText(profile.polaDalamRelasi || '')}</div>
       </div>
       <div class="narrative-card">
+        <div class="narrative-badge narrative-badge--insight">Insight</div>
         <div class="narrative-title">Respons terhadap Tekanan</div>
+        <div class="narrative-intro">Pola menghadapi stres dan cara kamu memulihkan diri.</div>
         <div class="narrative-body">${safeText(profile.responStres || '')}</div>
       </div>
       <div class="narrative-card">
+        <div class="narrative-badge narrative-badge--insight">Insight</div>
         <div class="narrative-title">Kecenderungan Kepemimpinan</div>
+        <div class="narrative-intro">Konteks di mana potensi kepemimpinanmu paling natural muncul.</div>
         <div class="narrative-body">${safeText(profile.kecenderunganKepemimpinan || '')}</div>
       </div>
       <div class="narrative-card full">
-        <div class="narrative-title">Penutup Refleksi</div>
-        <div class="narrative-body">${safeText(profile.kesimpulan || '')}</div>
+        <div class="narrative-badge narrative-badge--close">Penutup</div>
+        <div class="narrative-title">Refleksi Akhir</div>
+        <div class="narrative-body narrative-body--closing">${safeText(profile.kesimpulan || '')}</div>
       </div>
     </div>
 
-    <div class="u-aafcbaac">Langkah Selanjutnya</div>
+    <div class="result-section-label">Langkah Selanjutnya</div>
+    <div class="result-section-desc">Tiga langkah konkret yang paling relevan untuk profil ini — dirancang agar langsung bisa dipraktikkan.</div>
     <div class="growth-grid">${growthItems}</div>
 
     <div class="result-footer">
