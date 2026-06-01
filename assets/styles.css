@@ -931,10 +931,202 @@ body.mode-consultant .btn-next:hover:not(:disabled){
 
 /* ── PRINT ───────────────────────────────────────────────── */
 @media print{
-  body{background:#fff!important;color:#000!important;}
-  .mode-bar,.steps-wrap,.nav-row,.print-row,.loading-wrap{display:none!important;}
-  .app-wrap{max-width:100%;padding:0;}
-  .card,.result-section,.result-header-card{box-shadow:none;border-color:#ddd;page-break-inside:avoid;}
+  /* ── RESET ── */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  body{background:#fff!important;color:#1a1a1a!important;font-size:11pt;line-height:1.55;}
+
+  /* ── HIDE UI CHROME ── */
+  .mode-bar,.steps-wrap,.nav-row,.print-row,.loading-wrap,
+  .bazi-tab-row,.btn-next,.btn-back,.btn-outline,
+  #stepErrorBanner,.step-panel:not(#step5){display:none!important;}
+
+  /* ── LAYOUT ── */
+  .app-wrap{max-width:100%;padding:0 12px;margin:0;}
+  .result-wrap{display:block!important;}
+
+  /* ── HEADER CARD ── */
+  .result-header-card{
+    background:#fff!important;border:1.5pt solid #d4a96a;border-radius:8pt;
+    padding:18pt 22pt;margin-bottom:14pt;page-break-inside:avoid;
+    box-shadow:none!important;text-align:center;
+  }
+  .result-meta{font-size:8pt;color:#888!important;margin-bottom:4pt;}
+  .result-name{font-size:14pt;font-weight:700;margin-bottom:3pt;}
+  .result-type{font-size:18pt;font-weight:700;color:#b5631a!important;margin-bottom:6pt;}
+  .result-summary{font-size:10.5pt;color:#333!important;max-width:100%;margin:0 auto 10pt;}
+  .result-score{margin-top:8pt;}
+  .score-label{font-size:9pt;color:#888!important;}
+  .score-num{font-size:28pt;font-weight:800;color:#b5631a!important;line-height:1.1;}
+  .score-unit{font-size:14pt;}
+
+  /* ── PENGANTAR ── */
+  .result-pengantar{
+    background:#faf7f3!important;border-left:3pt solid #d4a96a;
+    padding:10pt 14pt;margin-bottom:12pt;font-size:10.5pt;
+    font-style:italic;color:#333!important;page-break-inside:avoid;
+  }
+
+  /* ── SECTION LABELS ── */
+  .result-section-label{
+    font-size:8pt;font-weight:700;color:#b5631a!important;
+    letter-spacing:1.5pt;text-transform:uppercase;
+    margin:16pt 0 4pt;border-bottom:0.5pt solid #e0c9a0;padding-bottom:3pt;
+  }
+  .result-section-desc{font-size:9pt;color:#666!important;margin-bottom:8pt;}
+
+  /* ── DISCLAIMER BOX ── */
+  .u-f9be9d50{
+    background:#faf7f3!important;border:0.5pt solid #e0c9a0;
+    border-radius:5pt;padding:7pt 10pt;margin-bottom:10pt;
+    font-size:9pt;color:#555!important;
+  }
+
+  /* ── METRICS GRID — force 3-col ── */
+  .metrics-grid{
+    display:grid!important;grid-template-columns:repeat(3,1fr)!important;
+    gap:8pt!important;margin-bottom:14pt;page-break-inside:avoid;
+  }
+  .metric-card{
+    background:#fff!important;border:0.75pt solid #ddd;border-radius:6pt;
+    padding:8pt 10pt;page-break-inside:avoid;
+  }
+  .metric-label{font-size:9pt;font-weight:700;color:#333!important;margin-bottom:2pt;}
+  .metric-val{font-size:18pt;font-weight:800;color:#b5631a!important;line-height:1.1;margin-bottom:2pt;}
+  .metric-val span{font-size:11pt;}
+  .metric-note{font-size:8pt;color:#888!important;margin-bottom:2pt;}
+  .metric-context{font-size:8.5pt;color:#555!important;margin-bottom:2pt;}
+  .metric-desc{font-size:8pt;color:#999!important;}
+
+  /* ── HIDE CANVAS CHARTS — add print placeholder ── */
+  .chart-row{display:none!important;}
+
+  /* ── METRIC BAR — print as simple line ── */
+  .metric-bar-bg{
+    height:4pt!important;background:#eee!important;
+    border-radius:2pt;margin-bottom:3pt;overflow:hidden;
+  }
+  .metric-bar-fill{height:4pt!important;background:#d4a96a!important;border-radius:2pt;}
+
+  /* ── NARRATIVE GRID — 2-col ── */
+  .narrative-grid{
+    display:grid!important;grid-template-columns:1fr 1fr!important;
+    gap:8pt!important;margin-bottom:14pt;
+  }
+  .narrative-card{
+    background:#fff!important;border:0.75pt solid #ddd;border-radius:6pt;
+    padding:10pt 12pt;page-break-inside:avoid;box-shadow:none!important;
+  }
+  .narrative-card.full{grid-column:1/-1!important;}
+  .narrative-badge{
+    display:inline-block;font-size:7pt;font-weight:700;letter-spacing:1pt;
+    text-transform:uppercase;padding:1.5pt 6pt;border-radius:3pt;margin-bottom:4pt;
+  }
+  .narrative-badge--strength{background:#e8f5ec!important;color:#2e7d4f!important;}
+  .narrative-badge--grow{background:#fef3e2!important;color:#a06010!important;}
+  .narrative-badge--insight{background:#e8f0fb!important;color:#2a4a9a!important;}
+  .narrative-badge--close{background:#f0eafa!important;color:#5a2a9a!important;}
+  .narrative-title{font-size:11pt;font-weight:700;color:#1a1a1a!important;margin-bottom:3pt;}
+  .narrative-intro{font-size:8.5pt;color:#777!important;font-style:italic;margin-bottom:6pt;}
+  .narrative-body{font-size:10pt;color:#333!important;line-height:1.6;}
+  .narrative-body--closing{font-size:10.5pt;font-style:italic;}
+
+  /* ── RICH LIST ── */
+  .narrative-list--rich{padding:0;list-style:none;display:flex;flex-direction:column;gap:4pt;}
+  .narrative-list--rich li{
+    padding:6pt 8pt;background:#faf7f3!important;
+    border-radius:4pt;border-left:2pt solid #d4a96a;
+    font-size:9.5pt;color:#333!important;line-height:1.5;
+  }
+
+  /* ── GROWTH GRID ── */
+  .growth-grid{
+    display:grid!important;grid-template-columns:1fr 1fr!important;gap:8pt!important;
+    margin-bottom:14pt;
+  }
+  .growth-item{
+    display:flex;gap:8pt;align-items:flex-start;
+    background:#faf7f3!important;border-radius:6pt;padding:8pt 10pt;
+    page-break-inside:avoid;
+  }
+  .growth-num{
+    font-size:14pt;font-weight:800;color:#d4a96a!important;
+    min-width:24pt;line-height:1.2;
+  }
+  .growth-text{font-size:9.5pt;color:#333!important;line-height:1.55;}
+
+  /* ── HYPOTHESIS CARD ── */
+  .hypothesis-card{
+    background:#faf7f3!important;border:0.75pt solid #d4a96a;
+    border-radius:6pt;padding:10pt 14pt;margin-bottom:10pt;page-break-inside:avoid;
+  }
+  .hypothesis-label{font-size:8pt;font-weight:700;color:#b5631a!important;text-transform:uppercase;letter-spacing:1pt;margin-bottom:3pt;}
+  .hypothesis-note{font-size:8pt;color:#888!important;font-style:italic;margin-bottom:6pt;}
+  .hypothesis-body{font-size:10pt;color:#333!important;line-height:1.6;}
+
+  /* ── FOOTER ── */
+  .result-footer{
+    font-size:8pt;color:#aaa!important;border-top:0.5pt solid #eee;
+    padding-top:8pt;margin-top:10pt;display:flex;justify-content:space-between;
+    page-break-inside:avoid;
+  }
+
+  /* ── BAZI SECTION ── */
+  .bazi-result-wrap{page-break-before:always;margin-top:0;}
+  .bazi-glossary{
+    background:#faf7f3!important;border:0.75pt solid #d4a96a;
+    border-radius:6pt;padding:10pt 14pt;margin-bottom:12pt;page-break-inside:avoid;
+  }
+  .bazi-glossary-title{font-size:8pt;font-weight:700;color:#b5631a!important;text-transform:uppercase;letter-spacing:1pt;margin-bottom:6pt;}
+  .bazi-glossary-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6pt;}
+  .bazi-glossary-item{font-size:8.5pt;color:#555!important;line-height:1.45;}
+
+  .bazi-chart-display{
+    background:#fff!important;border:0.75pt solid #ddd;border-radius:6pt;
+    padding:10pt 14pt;margin-bottom:10pt;page-break-inside:avoid;
+  }
+  .bazi-chart-header{display:flex!important;gap:8pt;margin-bottom:8pt;}
+  .bazi-chart-col,div[class*="bazi-chart"]{flex:1;text-align:center;}
+
+  /* Show ALL bazi tab panels in print */
+  .bazi-tab-panel{display:block!important;margin-bottom:10pt;}
+  .bazi-reading-card{
+    background:#fff!important;border:0.75pt solid #ddd;border-radius:6pt;
+    padding:8pt 12pt;margin-bottom:6pt;page-break-inside:avoid;
+  }
+  .bazi-reading-label{font-size:7.5pt;font-weight:700;color:#b5631a!important;text-transform:uppercase;letter-spacing:1pt;margin-bottom:2pt;}
+  .bazi-reading-title{font-size:11pt;font-weight:700;color:#1a1a1a!important;margin-bottom:4pt;}
+  .bazi-reading-note{
+    font-size:8.5pt;color:#777!important;font-style:italic;
+    padding:5pt 8pt;background:#faf7f3!important;border-radius:4pt;margin-bottom:6pt;
+  }
+  .bazi-reading-body{font-size:10pt;color:#333!important;line-height:1.6;}
+  .bazi-industries{display:flex!important;flex-wrap:wrap!important;gap:4pt!important;}
+  .u-ac49cfbc{
+    display:inline-block!important;padding:2pt 7pt;
+    background:#f0e8d8!important;border-radius:3pt;font-size:9pt;color:#333!important;
+  }
+  .bazi-elem-section{margin-bottom:6pt;}
+  .bazi-elem-section-label{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.8pt;margin-bottom:4pt;}
+  .bazi-elem-section--fav .bazi-elem-section-label{color:#2e7d4f!important;}
+  .bazi-elem-section--unfav .bazi-elem-section-label{color:#c04040!important;}
+  .bazi-elem-advice{font-size:9.5pt;color:#444!important;padding:5pt 8pt;background:#faf7f3!important;border-radius:4pt;margin-top:6pt;}
+
+  .bazi-lucky-grid{display:flex!important;flex-wrap:wrap!important;gap:5pt!important;}
+  .bazi-lucky-card{
+    border:0.75pt solid #ddd;border-radius:4pt;padding:5pt 8pt;
+    min-width:44pt;text-align:center;page-break-inside:avoid;
+  }
+  .bazi-lucky-card-current{border-color:#d4a96a!important;background:#fdf8f0!important;}
+
+  .bazi-disclaimer{
+    font-size:8pt;color:#999!important;border-top:0.5pt solid #eee;
+    padding-top:8pt;margin-top:12pt;font-style:italic;
+  }
+
+  /* ── PAGE BREAKS ── */
+  .result-header-card,.result-pengantar{page-break-after:avoid;}
+  .bazi-result-wrap .u-54ecaa5a{page-break-after:avoid;}
+  .narrative-card,.growth-item,.bazi-reading-card{page-break-inside:avoid;}
 }
 
 /* ── REDUCED MOTION ──────────────────────────────────────── */

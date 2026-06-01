@@ -13,7 +13,7 @@ const MAX_TEXT_FIELD = Number(process.env.MAX_TEXT_FIELD || 1200);
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 12);
 const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-reasoner';
-const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS || 2000);
+const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS || 4000);
 
 const ALLOWED_MODELS = new Set([
   'deepseek-reasoner',
