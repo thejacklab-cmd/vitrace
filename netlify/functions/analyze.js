@@ -93,9 +93,17 @@ function rateLimit(ip) {
   };
 }
 
-function sanitizeText(value, max = MAX_TEXT_FIELD) {
+function sanitizeText(value, max) {
+  if (max === undefined) max = MAX_TEXT_FIELD;
   if (value === null || value === undefined) return '';
-  return String(value).replace(/[ -]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+  // Strip control characters (U+0000-U+001F and U+007F), collapse whitespace
+  var s = String(value);
+  var out = '';
+  for (var i = 0; i < s.length; i++) {
+    var code = s.charCodeAt(i);
+    if (code <= 0x1F || code === 0x7F) { out += ' '; } else { out += s[i]; }
+  }
+  return out.replace(/s+/g, ' ').trim().slice(0, max);
 }
 
 function sanitizeArray(value, maxItems = 20, maxItemLen = 160) {
